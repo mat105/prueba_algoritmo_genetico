@@ -15,7 +15,7 @@ class Profesor:
 
     def dar_horario(self, cuando, turno):
         self.horarios.append( Horario(cuando, turno) )
-        self.horarios_originales.append( Horario(cuando, turno) )
+        #self.horarios_originales.append( Horario(cuando, turno) )
 
     def horarios_disponibles(self):
         return len(self.horarios)
@@ -25,13 +25,10 @@ class Profesor:
         ran = None
         
         if len(self.horarios) > 0:
-            ran = self.horarios.pop( randint( 0, len(self.horarios)-1 ) )
+            ran = self.horarios[ randint(0, len(self.horarios)-1) ]
+            #ran = self.horarios.pop( randint( 0, len(self.horarios)-1 ) )
         
         return ran
-        
-    def restablecer(self):
-        self.horarios.clear()
-        self.horarios = [k for k in self.horarios_originales]
 
     def __str__(self):
         return self.nombre
@@ -39,7 +36,7 @@ class Profesor:
     def __init__(self, nombre):
         self.nombre = nombre
         self.horarios = [ ]
-        self.horarios_originales = [  ]
+        #self.horarios_originales = [  ]
         
         #self.horario_materia = {}
         
@@ -75,31 +72,20 @@ class Materia:
     def dame_profesor(self):
         ok = True
         
-        while( len(self.profesores) > 0 ):
-            ran = randint(0, len(self.profesores)-1 )
-            pro = self.profesores[ran]
-            if pro.horarios_disponibles() <= 0:
-                del self.profesores[ran]
-            else:
-                return pro
+        ran = randint(0, len(self.profesores)-1 )
+        pro = self.profesores[ran]
             
-        return None
-
-        
-    def restablecer(self):
-        self.profesores = [k for k in self.profesores_iniciales]
-        
-        return self
+        return pro
 
 
     def dar_profesores(self, profes=[]):
         for k in profes:
             self.profesores.append(k)
-            self.profesores_iniciales.append(k)
+            #self.profesores_iniciales.append(k)
         
     def dar_profesor(self, prof):
         self.profesores.append(prof)
-        self.profesores_iniciales.append(prof)
+       # self.profesores_iniciales.append(prof)
 
 
     def __init__(self, nombre):
@@ -118,13 +104,7 @@ def generar_randoms(veces):
     
     for vec in range(veces):
         solu = []
-        #pmats = [h.restablecer() for h in mats] # Restablezco las materias (profesores nuevamente disponibles).
-        for h in mats:
-            h.restablecer()
-        
-        for pp in profes:
-            pp = pp.restablecer() # Para una nueva solucion necesito restablecer el horario de mis profesores.
-    
+
         for mat in mats:
             solu.append( Solucion( mat ) )
             
@@ -175,9 +155,15 @@ def reproducir(a,b):
     
 def fitness(solucion):
     tot = 0
+    repe = {}
     for k in solucion:
         if k.profesor: # Se le asigno alguien ( la materia se dicta )
-            tot += 1
+            #repe[k.horario].append(k.profesor)
+            if k.profesor in repe.setdefault(k.horario, []):
+                tot -= 10
+            else:
+                tot += 1
+                repe[k.horario].append(k.profesor)
             
     return tot
     # Cantidad de materias dadas. Probar materias+variedad de profesores?
@@ -283,17 +269,17 @@ def main():
     
     # estos randoms estan ya filtrados, no deberian existir repetidos ni cosas raras.
     # probablemente necesite menos iteraciones?
-    arranque = generar_randoms(500) # todas las soluciones
+    arranque = generar_randoms(600) # todas las soluciones
     
     # 100 rondas
-    for rondas in range(100):
+    for rondas in range(80):
         # ordeno mi poblacion por fitness
         arranque = sorted(arranque, key=compa, reverse=True) #arranque.sort( key=compa )
         # creo un grupo nuevo en base a los anteriores
         # quizas es mejor hacer mas hijos de los mismos que todos de distintos.
-        extras = [ reproducir(arranque[x], arranque[x+1]) for x in range(100) ]
+        extras = [ reproducir(arranque[randint(0, 20)], arranque[randint(21,35)]) for x in range(300) ]
         # siguen a la siguiente ronda 400 seleccionados y 100 nuevos.
-        arranque = arranque[:400] + extras
+        arranque = arranque[:300] + extras
         # incluir mutacion?...
         pass
     
@@ -313,7 +299,7 @@ def main():
         else:
             print(cosa.materia.nombre)
     
-    print("Total materias:", totm)
+    print("Total materias:", totm, len(arranque))
 
 
 
