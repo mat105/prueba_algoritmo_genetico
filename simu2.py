@@ -83,11 +83,13 @@ class Materia:
 
     def dar_profesores(self, profes=[]):
         for k in profes:
-            self.profesores.append(k)
+            if k.horarios:
+                self.profesores.append(k)
             #self.profesores_iniciales.append(k)
         
     def dar_profesor(self, prof):
-        self.profesores.append(prof)
+        if prof.horarios:
+            self.profesores.append(prof)
        # self.profesores_iniciales.append(prof)
 
 
@@ -207,14 +209,14 @@ fagalde = Profesor("Fagalde")
 
 # Aca van todos los profesores
 def cargar_profesores():
-    gaston.dar_horario( "lunes", "maniana" )
+    #gaston.dar_horario( "lunes", "maniana" )
     #gaston.dar_horario( "martes", "maniana" )
     #gaston.dar_horario("jueves", "noche")
-    gaston.dar_horario("sabado", "maniana")
+    #gaston.dar_horario("sabado", "maniana")
     
     #fernando.dar_horario( "martes", "maniana" )
     fernando.dar_horario( "jueves", "maniana" )
-    fernando.dar_horario( "viernes", "tarde" )
+    #fernando.dar_horario( "viernes", "tarde" )
     
     #roberto.dar_horario( "lunes", "noche" )
     roberto.dar_horario("martes", "noche")
@@ -230,13 +232,13 @@ def cargar_profesores():
     #graciana.dar_horario("lunes", "noche")
     #graciana.dar_horario("martes", "maniana")
     #graciana.dar_horario("martes", "noche")
-    graciana.dar_horario("sabado", "maniana")
+    #graciana.dar_horario("sabado", "maniana")
     
     #federico.dar_horario("lunes", "noche")
     federico.dar_horario("martes", "maniana")
     #federico.dar_horario( "miercoles", "tarde" )
     #federico.dar_horario("jueves", "noche")
-    federico.dar_horario("sabado", "maniana")
+    #federico.dar_horario("sabado", "maniana")
     
     fagalde.dar_horario( "sabado", "tarde" )
     #fagalde.dar_horario("miercoles", "noche" )

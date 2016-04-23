@@ -97,12 +97,14 @@ class Materia:
 
     def dar_profesores(self, profes=[]):
         for k in profes:
-            self.profesores.append(k)
-            self.profesores_iniciales.append(k)
+            if k.horarios:
+                self.profesores.append(k)
+                self.profesores_iniciales.append(k)
         
     def dar_profesor(self, prof):
-        self.profesores.append(prof)
-        self.profesores_iniciales.append(prof)
+        if prof.horarios:
+            self.profesores.append(prof)
+            self.profesores_iniciales.append(prof)
 
 
     def __init__(self, nombre):
