@@ -12,6 +12,7 @@ class Horario:
 
 
 class Profesor:
+    lista = []
 
     def dar_horario(self, cuando, turno):
         self.horarios.append( Horario(cuando, turno) )
@@ -41,6 +42,7 @@ class Profesor:
         self.horarios = [ ]
         self.horarios_originales = [  ]
         
+        Profesor.lista.append(self)
         #self.horario_materia = {}
         
 #===============================================
@@ -69,6 +71,7 @@ class Solucion:
 
 
 class Materia:
+    lista = []
 
     # Busco un profesor, si no hay la materia queda sin darse.
     # Si encuentra un profesor y el profesor no tiene horarios disponibles busca a otro.
@@ -107,25 +110,25 @@ class Materia:
         self.profesores_iniciales = []
         
         self.nombre = nombre
+        
+        Materia.lista.append(self)
 
 
 
 def generar_randoms(veces):
     ret = []
     # cuidado con esto, no repetir materias ni profesores!!.
-    mats = [ analisis, simulacion, circuitos, programacion, ingles, metodos, control, redes, operativos, seguridad ]
-    profes = [otaduy, graciana, roberto, federico, gaston, fernando, ezequiel, pablo, fagalde]
     
     for vec in range(veces):
         solu = []
         #pmats = [h.restablecer() for h in mats] # Restablezco las materias (profesores nuevamente disponibles).
-        for h in mats:
+        for h in Materia.lista:
             h.restablecer()
         
-        for pp in profes:
+        for pp in Profesor.lista:
             pp = pp.restablecer() # Para una nueva solucion necesito restablecer el horario de mis profesores.
     
-        for mat in mats:
+        for mat in Materia.lista:
             solu.append( Solucion( mat ) )
             
         ret.append(solu) # Agrego la solucion al conjunto de soluciones
@@ -145,7 +148,7 @@ def reproducir(a,b):
     la = int(len(a)/2)
     lb = int(len(b)/2)
     
-    c = a[0:la]+b[1+lb:]
+    c = a[0:la]+b[lb:]
     repetidos = {}
     
     for idp in range(len(c)):
@@ -155,7 +158,7 @@ def reproducir(a,b):
             if idp <= la:
                 c[idp] = b[idp]
             else:
-                c[idp] = a[idp+1]
+                c[idp] = a[idp]
         
     
     for idx in range(len(c)):
@@ -164,7 +167,7 @@ def reproducir(a,b):
             if idx <= la:
                 c[idx] = b[idx]
             else:
-                c[idx] = a[idx+1]
+                c[idx] = a[idx]
         elif val.profesor != None:
             repetidos[val.horario].append(val.profesor)
             
@@ -262,10 +265,10 @@ redes = Materia("Redes")
 #===============================================
 # aca van todas las materias
 def cargar_materias():
-    analisis.dar_profesores( [gaston, ezequiel, graciana] )
+    analisis.dar_profesores( [gaston, ezequiel, graciana, otaduy] )
     simulacion.dar_profesores( [fernando, gaston, ezequiel] )
     circuitos.dar_profesores( [roberto, federico] )
-    programacion.dar_profesores( [fernando, otaduy, pablo] )
+    programacion.dar_profesores( [fernando, pablo] )
     ingles.dar_profesores( [ezequiel, federico] )
     metodos.dar_profesores( [roberto, gaston, graciana] )
     control.dar_profesores( [federico, pablo, gaston] )
@@ -286,14 +289,14 @@ def main():
     arranque = generar_randoms(500) # todas las soluciones
     
     # 100 rondas
-    for rondas in range(100):
+    for rondas in range(40):
         # ordeno mi poblacion por fitness
         arranque = sorted(arranque, key=compa, reverse=True) #arranque.sort( key=compa )
         # creo un grupo nuevo en base a los anteriores
         # quizas es mejor hacer mas hijos de los mismos que todos de distintos.
-        extras = [ reproducir(arranque[x], arranque[x+1]) for x in range(100) ]
+        extras = [ reproducir(arranque[randint(0,20)], arranque[randint(0,20)]) for x in range(200) ]
         # siguen a la siguiente ronda 400 seleccionados y 100 nuevos.
-        arranque = arranque[:400] + extras
+        arranque = arranque[:300] + extras
         # incluir mutacion?...
         pass
     
@@ -302,7 +305,9 @@ def main():
     # Obtengo el mejor
     arranque = arranque[0]
     
-    print( arranque )
+    #print( arranque )
+    for cosa in arranque:
+        print(cosa)
     
     
     
@@ -313,7 +318,7 @@ def main():
         else:
             print(cosa.materia.nombre)
     
-    print("Total materias:", totm)
+    print("Total materias:", len(Materia.lista), '/', totm)
 
 
 

@@ -12,6 +12,7 @@ class Horario:
 
 
 class Profesor:
+    lista = []
 
     def dar_horario(self, cuando, turno):
         self.horarios.append( Horario(cuando, turno) )
@@ -39,6 +40,7 @@ class Profesor:
         #self.horarios_originales = [  ]
         
         #self.horario_materia = {}
+        Profesor.lista.append(self)
         
 #===============================================
 
@@ -66,6 +68,7 @@ class Solucion:
 
 
 class Materia:
+    lista = []
 
     # Busco un profesor, si no hay la materia queda sin darse.
     # Si encuentra un profesor y el profesor no tiene horarios disponibles busca a otro.
@@ -93,19 +96,21 @@ class Materia:
         self.profesores_iniciales = []
         
         self.nombre = nombre
+        
+        Materia.lista.append(self)
 
 
 
 def generar_randoms(veces):
     ret = []
     # cuidado con esto, no repetir materias ni profesores!!.
-    mats = [ analisis, simulacion, circuitos, programacion, ingles, metodos, control, redes, operativos, seguridad ]
-    profes = [otaduy, graciana, roberto, federico, gaston, fernando, ezequiel, pablo, fagalde]
+    #mats = [ analisis, simulacion, circuitos, programacion, ingles, metodos, control, redes, operativos, seguridad ]
+    #profes = [otaduy, graciana, roberto, federico, gaston, fernando, ezequiel, pablo, fagalde]
     
     for vec in range(veces):
         solu = []
 
-        for mat in mats:
+        for mat in Materia.lista:
             solu.append( Solucion( mat ) )
             
         ret.append(solu) # Agrego la solucion al conjunto de soluciones
@@ -124,10 +129,15 @@ def reproducir(a,b):
     
     la = int(len(a)/2)
     lb = int(len(b)/2)
+    #print(la, lb)
     
-    c = a[0:la]+b[1+lb:]
-    repetidos = {}
+    #print(a)
     
+    c = a[0:la]+b[lb:] # Mitad de A y mitad de B
+    
+    #quit()
+    
+    # Si una solucion no tiene profesor lo cambio por el de la otra lista.
     for idp in range(len(c)):
         val = c[idp]
         
@@ -135,7 +145,10 @@ def reproducir(a,b):
             if idp <= la:
                 c[idp] = b[idp]
             else:
-                c[idp] = a[idp+1]
+                c[idp] = a[idp]
+    
+    
+    repetidos = {}
         
     
     for idx in range(len(c)):
@@ -144,9 +157,11 @@ def reproducir(a,b):
             if idx <= la:
                 c[idx] = b[idx]
             else:
-                c[idx] = a[idx+1]
+                c[idx] = a[idx]
         elif val.profesor != None:
             repetidos[val.horario].append(val.profesor)
+            
+    #print(len(c))
             
     return c
     
@@ -255,9 +270,9 @@ def cargar_materias():
     ingles.dar_profesores( [ezequiel, federico] )
     metodos.dar_profesores( [roberto, gaston, graciana] )
     control.dar_profesores( [federico, pablo, gaston] )
-    redes.dar_profesores( [pablo, fagalde] )
+    redes.dar_profesores( [pablo, fagalde, graciana] )
     operativos.dar_profesores( [fagalde, roberto] )
-    seguridad.dar_profesores( [fagalde, graciana] )
+    seguridad.dar_profesores( [fagalde, graciana, otaduy] )
     
 
 #===============================================
@@ -269,16 +284,16 @@ def main():
     
     # estos randoms estan ya filtrados, no deberian existir repetidos ni cosas raras.
     # probablemente necesite menos iteraciones?
-    arranque = generar_randoms(600) # todas las soluciones
+    arranque = generar_randoms(500) # todas las soluciones
     
     # 100 rondas
-    for rondas in range(80):
+    for rondas in range(50):
         # ordeno mi poblacion por fitness
         arranque = sorted(arranque, key=compa, reverse=True) #arranque.sort( key=compa )
         # creo un grupo nuevo en base a los anteriores
         # quizas es mejor hacer mas hijos de los mismos que todos de distintos.
-        extras = [ reproducir(arranque[randint(0, 20)], arranque[randint(21,35)]) for x in range(300) ]
-        # siguen a la siguiente ronda 400 seleccionados y 100 nuevos.
+        extras = [ reproducir(arranque[randint(0, 20)], arranque[randint(0,20)]) for x in range(200) ]
+        # siguen a la siguiente ronda 300 seleccionados y 200 nuevos.
         arranque = arranque[:300] + extras
         # incluir mutacion?...
         pass
@@ -286,10 +301,11 @@ def main():
     # Reordeno la ultima ronda
     arranque = sorted(arranque, key=compa, reverse=True) #arranque.sort( key=compa )
     # Obtengo el mejor
-    arranque = arranque[0]
+    arranque = arranque[ 0 ]
     
-    print( arranque )
-    
+    # MOSTRAR TODO
+    for cosa in arranque:
+        print(cosa)
     
     
     totm = 0
@@ -299,7 +315,7 @@ def main():
         else:
             print(cosa.materia.nombre)
     
-    print("Total materias:", totm, len(arranque))
+    print("Total materias:", totm , '/',  len(Materia.lista))
 
 
 
