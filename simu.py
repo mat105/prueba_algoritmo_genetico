@@ -265,16 +265,16 @@ redes = Materia("Redes")
 #===============================================
 # aca van todas las materias
 def cargar_materias():
-    analisis.dar_profesores( [gaston, ezequiel, graciana, otaduy] )
+    analisis.dar_profesores( [gaston, ezequiel, graciana] )
     simulacion.dar_profesores( [fernando, gaston, ezequiel] )
     circuitos.dar_profesores( [roberto, federico] )
-    programacion.dar_profesores( [fernando, pablo] )
+    programacion.dar_profesores( [fernando, otaduy, pablo] )
     ingles.dar_profesores( [ezequiel, federico] )
     metodos.dar_profesores( [roberto, gaston, graciana] )
     control.dar_profesores( [federico, pablo, gaston] )
-    redes.dar_profesores( [pablo, fagalde] )
+    redes.dar_profesores( [pablo, fagalde, graciana] )
     operativos.dar_profesores( [fagalde, roberto] )
-    seguridad.dar_profesores( [fagalde, graciana] )
+    seguridad.dar_profesores( [fagalde, graciana, otaduy] )
     
 
 #===============================================
@@ -309,16 +309,27 @@ def main():
     for cosa in arranque:
         print(cosa)
     
-    
-    
     totm = 0
+    repetidos = {}
+    errores = []
+    
     for cosa in arranque:
         if cosa.profesor != None:
-            totm+=1
+            if cosa.profesor in repetidos.setdefault(cosa.horario, []):
+                #print("La materia", cosa.materia.nombre, "no puede darse por falta de profesor.")
+                errores.append( "La materia " + cosa.materia.nombre + " no puede darse por falta de profesor.")
+            else:
+                totm+=1
+                repetidos[cosa.horario].append(cosa.profesor)
         else:
-            print(cosa.materia.nombre)
+            errores.append( "La materia " + cosa.materia.nombre + " no puede darse por falta de profesor.")
+            #print("La materia",cosa.materia.nombre, "no puede darse por falta de profesor.")
     
-    print("Total materias:", len(Materia.lista), '/', totm)
+    print("")
+    for cosa in errores:
+        print(cosa)
+    
+    print("Total materias:", totm , '/',  len(Materia.lista))
 
 
 

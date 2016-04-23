@@ -307,17 +307,29 @@ def main():
     for cosa in arranque:
         print(cosa)
     
-    
     totm = 0
+    repetidos = {}
+    
+    errores = []
+    
     for cosa in arranque:
         if cosa.profesor != None:
-            totm+=1
+            if cosa.profesor in repetidos.setdefault(cosa.horario, []):
+                #print("La materia", cosa.materia.nombre, "no puede darse por falta de profesor.")
+                errores.append( "La materia " + cosa.materia.nombre + " no puede darse por falta de profesor.")
+            else:
+                totm+=1
+                repetidos[cosa.horario].append(cosa.profesor)
         else:
-            print(cosa.materia.nombre)
+            errores.append( "La materia " + cosa.materia.nombre + " no puede darse por falta de profesor.")
+            #print("La materia",cosa.materia.nombre, "no puede darse por falta de profesor.")
+    
+    print("")
+    for cosa in errores:
+        print(cosa)
     
     print("Total materias:", totm , '/',  len(Materia.lista))
 
 
 
 main()
-
