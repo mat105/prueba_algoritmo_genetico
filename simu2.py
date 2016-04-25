@@ -209,14 +209,14 @@ fagalde = Profesor("Fagalde")
 
 # Aca van todos los profesores
 def cargar_profesores():
-    #gaston.dar_horario( "lunes", "maniana" )
+    gaston.dar_horario( "lunes", "maniana" )
     #gaston.dar_horario( "martes", "maniana" )
     #gaston.dar_horario("jueves", "noche")
-    #gaston.dar_horario("sabado", "maniana")
+    gaston.dar_horario("sabado", "maniana")
     
     #fernando.dar_horario( "martes", "maniana" )
     fernando.dar_horario( "jueves", "maniana" )
-    #fernando.dar_horario( "viernes", "tarde" )
+    fernando.dar_horario( "viernes", "tarde" )
     
     #roberto.dar_horario( "lunes", "noche" )
     roberto.dar_horario("martes", "noche")
@@ -232,13 +232,13 @@ def cargar_profesores():
     #graciana.dar_horario("lunes", "noche")
     #graciana.dar_horario("martes", "maniana")
     #graciana.dar_horario("martes", "noche")
-    #graciana.dar_horario("sabado", "maniana")
+    graciana.dar_horario("sabado", "maniana")
     
     #federico.dar_horario("lunes", "noche")
     federico.dar_horario("martes", "maniana")
     #federico.dar_horario( "miercoles", "tarde" )
     #federico.dar_horario("jueves", "noche")
-    #federico.dar_horario("sabado", "maniana")
+    federico.dar_horario("sabado", "maniana")
     
     fagalde.dar_horario( "sabado", "tarde" )
     #fagalde.dar_horario("miercoles", "noche" )
@@ -306,8 +306,8 @@ def main():
     arranque = arranque[ 0 ]
     
     # MOSTRAR TODO
-    for cosa in arranque:
-        print(cosa)
+    #for cosa in arranque:
+        #print(cosa)
     
     totm = 0
     repetidos = {}
@@ -320,6 +320,7 @@ def main():
                 #print("La materia", cosa.materia.nombre, "no puede darse por falta de profesor.")
                 errores.append( "La materia " + cosa.materia.nombre + " no puede darse por falta de profesor.")
             else:
+                print(cosa)
                 totm+=1
                 repetidos[cosa.horario].append(cosa.profesor)
         else:

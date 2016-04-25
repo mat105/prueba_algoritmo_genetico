@@ -308,8 +308,8 @@ def main():
     arranque = arranque[0]
     
     #print( arranque )
-    for cosa in arranque:
-        print(cosa)
+    #for cosa in arranque:
+        #print(cosa)
     
     totm = 0
     repetidos = {}
@@ -321,6 +321,7 @@ def main():
                 #print("La materia", cosa.materia.nombre, "no puede darse por falta de profesor.")
                 errores.append( "La materia " + cosa.materia.nombre + " no puede darse por falta de profesor.")
             else:
+                print(cosa)
                 totm+=1
                 repetidos[cosa.horario].append(cosa.profesor)
         else:
